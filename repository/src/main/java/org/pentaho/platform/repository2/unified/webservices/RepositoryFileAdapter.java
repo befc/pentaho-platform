@@ -13,7 +13,7 @@
  * See the GNU General Public License for more details.
  *
  *
- * Copyright 2006 - 2016 Pentaho Corporation.  All rights reserved.
+ * Copyright 2006 - 2017 Pentaho Corporation.  All rights reserved.
  */
 
 package org.pentaho.platform.repository2.unified.webservices;
@@ -27,6 +27,8 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.platform.api.repository2.unified.IRepositoryVersionManager;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.api.repository2.unified.RepositoryFileSid;
@@ -40,6 +42,9 @@ import org.pentaho.platform.repository2.unified.jcr.JcrRepositoryFileUtils;
  * @author mlowery
  */
 public class RepositoryFileAdapter extends XmlAdapter<RepositoryFileDto, RepositoryFile> {
+
+  private static LogChannelInterface logger = new LogChannel( RepositoryFileAdapter.class.getSimpleName() );
+
   private static DefaultUnifiedRepositoryWebService repoWs;
   private Set<String> membersSet;
   private boolean exclude;
@@ -91,72 +96,77 @@ public class RepositoryFileAdapter extends XmlAdapter<RepositoryFileDto, Reposit
       return null;
     }
     RepositoryFileDto f = new RepositoryFileDto();
-    if ( include( "name", memberSet, exclude ) ) {
-      f.name = v.getName();
-    }
-    if ( include( "path", memberSet, exclude ) ) {
-      f.path = v.getPath();
-    }
-    if ( include( "hidden", memberSet, exclude ) ) {
-      f.hidden = v.isHidden();
-    }
-    if ( include( "aclNode", memberSet, exclude ) ) {
-      f.aclNode = v.isAclNode();
-    }
-    if ( include( "createDate", memberSet, exclude ) ) {
-      f.createdDate = v.getCreatedDate();
-    }
-    if ( include( "creatorId", memberSet, exclude ) ) {
-      f.creatorId = v.getCreatorId();
-    }
-    if ( include( "fileSize", memberSet, exclude ) ) {
-      f.fileSize = v.getFileSize();
-    }
-    if ( include( "description", memberSet, exclude ) ) {
-      f.description = v.getDescription();
-    }
-    if ( include( "folder", memberSet, exclude ) ) {
-      f.folder = v.isFolder();
-    }
-    //The include check is intentionally omitted on the Id field because
-    //it must be present or the tree rest service call will error
-    if ( v.getId() != null ) {
-      f.id = v.getId().toString();
-    }
-    if ( include( "lastModifiedDate", memberSet, exclude ) ) {
-      f.lastModifiedDate = v.getLastModifiedDate();
-    }
-    if ( include( "locale", memberSet, exclude ) ) {
-      f.locale = v.getLocale();
-    }
-    if ( include( "originalParentFolderPath", memberSet, exclude ) ) {
-      f.originalParentFolderPath = v.getOriginalParentFolderPath();
-    }
-    if ( include( "deletedDate", memberSet, exclude ) ) {
-      f.deletedDate = v.getDeletedDate();
-    }
-    if ( include( "lockDate", memberSet, exclude ) ) {
-      f.lockDate = v.getLockDate();
-    }
-    if ( include( "locked", memberSet, exclude ) ) {
-      f.locked = v.isLocked();
-    }
-    if ( include( "lockMessage", memberSet, exclude ) ) {
-      f.lockMessage = v.getLockMessage();
-    }
-    if ( include( "lockOwner", memberSet, exclude ) ) {
-      f.lockOwner = v.getLockOwner();
-    }
-    if ( include( "title", memberSet, exclude ) ) {
-      f.title = v.getTitle();
-    }
-    if ( include( "versioned", memberSet, exclude ) ) {
-      f.versioned = v.isVersioned();
-    }
-    if ( include( "versionId", memberSet, exclude ) ) {
-      if ( v.getVersionId() != null ) {
-        f.versionId = v.getVersionId().toString();
+    try {
+      if ( include( "name", memberSet, exclude ) ) {
+        f.name = v.getName();
       }
+      if ( include( "path", memberSet, exclude ) ) {
+        f.path = v.getPath();
+      }
+      if ( include( "hidden", memberSet, exclude ) ) {
+        f.hidden = v.isHidden();
+      }
+      if ( include( "aclNode", memberSet, exclude ) ) {
+        f.aclNode = v.isAclNode();
+      }
+      if ( include( "createDate", memberSet, exclude ) ) {
+        f.createdDate = v.getCreatedDate();
+      }
+      if ( include( "creatorId", memberSet, exclude ) ) {
+        f.creatorId = v.getCreatorId();
+      }
+      if ( include( "fileSize", memberSet, exclude ) ) {
+        f.fileSize = v.getFileSize();
+      }
+      if ( include( "description", memberSet, exclude ) ) {
+        f.description = v.getDescription();
+      }
+      if ( include( "folder", memberSet, exclude ) ) {
+        f.folder = v.isFolder();
+      }
+      //The include check is intentionally omitted on the Id field because
+      //it must be present or the tree rest service call will error
+      if ( v.getId() != null ) {
+        f.id = v.getId().toString();
+      }
+      if ( include( "lastModifiedDate", memberSet, exclude ) ) {
+        f.lastModifiedDate = v.getLastModifiedDate();
+      }
+      if ( include( "locale", memberSet, exclude ) ) {
+        f.locale = v.getLocale();
+      }
+      if ( include( "originalParentFolderPath", memberSet, exclude ) ) {
+        f.originalParentFolderPath = v.getOriginalParentFolderPath();
+      }
+      if ( include( "deletedDate", memberSet, exclude ) ) {
+        f.deletedDate = v.getDeletedDate();
+      }
+      if ( include( "lockDate", memberSet, exclude ) ) {
+        f.lockDate = v.getLockDate();
+      }
+      if ( include( "locked", memberSet, exclude ) ) {
+        f.locked = v.isLocked();
+      }
+      if ( include( "lockMessage", memberSet, exclude ) ) {
+        f.lockMessage = v.getLockMessage();
+      }
+      if ( include( "lockOwner", memberSet, exclude ) ) {
+        f.lockOwner = v.getLockOwner();
+      }
+      if ( include( "title", memberSet, exclude ) ) {
+        f.title = v.getTitle();
+      }
+      if ( include( "versioned", memberSet, exclude ) ) {
+        f.versioned = v.isVersioned();
+      }
+      if ( include( "versionId", memberSet, exclude ) ) {
+        if ( v.getVersionId() != null ) {
+          f.versionId = v.getVersionId().toString();
+        }
+      }
+    } catch ( NullPointerException e ) {
+      logger.logError( "NullPointerException while reading file attributes, returning null." );
+      return null;
     }
 
     if ( includeAcls ) {
