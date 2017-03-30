@@ -13,7 +13,7 @@
  * See the GNU General Public License for more details.
  *
  *
- * Copyright 2006 - 2016 Pentaho Corporation.  All rights reserved.
+ * Copyright 2006 - 2017 Pentaho Corporation.  All rights reserved.
  */
 
 package org.pentaho.platform.repository2.unified.jcr;
@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -741,6 +742,8 @@ public class JcrRepositoryFileUtils {
         }
       }
     }
+
+    children.removeIf( Objects::isNull );
     Collections.sort( children );
     return children;
 
@@ -1252,6 +1255,7 @@ public class JcrRepositoryFileUtils {
             lockHelper, depth, showHidden, accessVoterManager, types, foundFiltered, true );
       }
 
+      children.removeIf( Objects::isNull );
       Collections.sort( children );
     } else {
       children = null;
