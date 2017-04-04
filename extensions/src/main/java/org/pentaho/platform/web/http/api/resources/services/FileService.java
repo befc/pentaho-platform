@@ -1344,7 +1344,7 @@ public class FileService {
     RepositoryRequest repositoryRequest = getRepositoryRequest( path, showHidden, depth, filter );
     repositoryRequest.setIncludeAcls( includeAcls );
 
-    RepositoryFileTreeDto tree = getRepoWs().getTreeFromRequest( repositoryRequest );
+    RepositoryFileTreeDto tree = getRepoWs().getTreeFromRequest( repositoryRequest, false );
     List<RepositoryFileTreeDto> filteredChildren = new ArrayList<RepositoryFileTreeDto>();
 
     // BISERVER-9599 - Use special sort order
@@ -1353,18 +1353,6 @@ public class FileService {
       collator.setStrength( Collator.PRIMARY ); // ignore case
       sortByLocaleTitle( collator, tree );
     }
-
-    for ( RepositoryFileTreeDto child : tree.getChildren() ) {
-      RepositoryFileDto file = child.getFile();
-      Map<String, Serializable> fileMeta = getRepository().getFileMetadata( file.getId() );
-      boolean isSystemFolder =
-        fileMeta.containsKey( IUnifiedRepository.SYSTEM_FOLDER ) ? (Boolean) fileMeta
-          .get( IUnifiedRepository.SYSTEM_FOLDER ) : false;
-      if ( !isSystemFolder ) {
-        filteredChildren.add( child );
-      }
-    }
-    tree.setChildren( filteredChildren );
 
     return tree;
   }

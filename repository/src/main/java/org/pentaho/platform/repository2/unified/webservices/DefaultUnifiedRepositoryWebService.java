@@ -155,6 +155,10 @@ public class DefaultUnifiedRepositoryWebService implements IUnifiedRepositoryWeb
   }
 
   public RepositoryFileTreeDto getTreeFromRequest( final RepositoryRequest repositoryRequest ) {
+    return getTreeFromRequest( repositoryRequest, true );
+  }
+
+  public RepositoryFileTreeDto getTreeFromRequest( final RepositoryRequest repositoryRequest, boolean includeSystemFolders ) {
     // RepositoryFileTree tree = repo.getTree( path, depth, filter, showHidden );
 
     RepositoryFileTree tree = repo.getTree( repositoryRequest );
@@ -169,7 +173,7 @@ public class DefaultUnifiedRepositoryWebService implements IUnifiedRepositoryWeb
       boolean isSystemFolder =
           fileMeta.containsKey( IUnifiedRepository.SYSTEM_FOLDER ) ? (Boolean) fileMeta
               .get( IUnifiedRepository.SYSTEM_FOLDER ) : false;
-      if ( !isAdmin && isSystemFolder ) {
+      if ( ( !isAdmin || !includeSystemFolders ) && isSystemFolder ) {
         continue;
       }
       files.add( file );
