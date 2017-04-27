@@ -13,7 +13,7 @@
  * See the GNU General Public License for more details.
  *
  *
- * Copyright 2006 - 2016 Pentaho Corporation.  All rights reserved.
+ * Copyright 2006 - 2017 Pentaho Corporation.  All rights reserved.
  */
 
 package org.pentaho.platform.repository;
@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.service.IDatabaseDialectService;
 import org.pentaho.di.repository.RepositoryObjectType;
@@ -74,10 +75,11 @@ public class JcrBackedDatasourceMgmtService implements IDatasourceMgmtService {
       // PentahoSessionHolder.getSession());
       // databaseMeta.setPassword(passwordService.encrypt(databaseMeta.getPassword()));
 
+      String dbConnectionName = StringEscapeUtils.unescapeHtml( databaseConnection.getName() );
       RepositoryFile file =
-          new RepositoryFile.Builder( RepositoryFilenameUtils.escape( databaseConnection.getName()
+          new RepositoryFile.Builder( RepositoryFilenameUtils.escape( dbConnectionName
               + RepositoryObjectType.DATABASE.getExtension(), cachedReservedChars ) ).title(
-              RepositoryFile.DEFAULT_LOCALE, databaseConnection.getName() ).versioned( true ).build();
+              RepositoryFile.DEFAULT_LOCALE, dbConnectionName ).versioned( true ).build();
       file =
           repository.createFile( getDatabaseParentFolderId(), file, new NodeRepositoryFileData( databaseHelper
               .databaseConnectionToDataNode( databaseConnection ) ), null );
