@@ -144,6 +144,12 @@ public class HttpSessionPentahoSessionIntegrationFilter implements Filter, Initi
    */
   protected boolean callSetAuthenticatedForAnonymousUsers = true;
 
+  /**
+   * If <code>true</code>, it enables the session expire dialog in CAS. The default value is <code>false</code> since the expected
+   * scennario is for this dialog not to appear.
+   */
+  private boolean enableSessionExpireDialogInCas = false;
+
   // ~ Methods ========================================================================================================
 
   /**
@@ -393,7 +399,7 @@ public class HttpSessionPentahoSessionIntegrationFilter implements Filter, Initi
   /**
    * Sets cookies needed to implement a session expiration dialog.
    * Enabled by default, could be disabled by a session-expired-dialog=false in a pentaho.xml.
-   * Doesn't set the cookie in case CAS is used.
+   * Doesn't set the cookie in case CAS is used, unless isEnableSessionExpireDialogInCas.
    *
    * The 'session-expiry' is needed to check if the session has expired.
    * The 'server-time' is needed to calculate offset between server and client time.
@@ -424,10 +430,12 @@ public class HttpSessionPentahoSessionIntegrationFilter implements Filter, Initi
         return;
       }
 
-      //No session expired dialog when CAS is used
-      for ( AuthenticationProvider provider : authenticationProviders ) {
-        if ( provider.getClass().getSimpleName().startsWith( "CasAuthenticationProvider" ) ) {
-          return;
+      //No session expired dialog when CAS is used, unless isEnableSessionExpireDialogInCas
+      if ( !isEnableSessionExpireDialogInCas() ) {
+        for ( AuthenticationProvider provider : authenticationProviders ) {
+          if ( provider.getClass().getSimpleName().startsWith( "CasAuthenticationProvider" ) ) {
+            return;
+          }
         }
       }
 
@@ -588,5 +596,13 @@ public class HttpSessionPentahoSessionIntegrationFilter implements Filter, Initi
       // nothing to do
     }
 
+  }
+
+  public boolean isEnableSessionExpireDialogInCas() {
+    return enableSessionExpireDialogInCas;
+  }
+
+  public void setEnableSessionExpireDialogInCas( boolean enableSessionExpireDialogInCas ) {
+    this.enableSessionExpireDialogInCas = enableSessionExpireDialogInCas;
   }
 }
