@@ -221,7 +221,7 @@
                 <div class="space-60"></div>
                 <div class="input-container">
                   <button type="submit" id="loginbtn" class="btn"><%=Messages.getInstance().getString("UI.PUC.LOGIN.LOGIN")%></button>
-                  <input type="hidden" name="locale" value="en_US">
+                  <input type="hidden" name="locale" value="<%=Encode.forHtmlAttribute(request.getLocale().toString())%>">
                 </div>
                 <div class="space-60"></div>
               </div>
